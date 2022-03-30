@@ -9,8 +9,23 @@ exports_files(
 )
 
 cc_binary(
-    name = "libstrophe_example",
-    srcs = ["libstrophe_example.c"],
+    name = "basic_example",
+    srcs = ["basic_example.c"],
+    linkopts = [
+        "-undefined",
+        "dynamic_lookup",
+    ],
+    includes = ["@libstrophe://src"],
+    deps = [
+        "@expat",
+        "@libstrophe",
+        "@openssl",
+    ],
+)
+
+cc_binary(
+    name = "complex_example",
+    srcs = ["complex_example.c"],
     linkopts = [
         "-undefined",
         "dynamic_lookup",
@@ -24,9 +39,17 @@ cc_binary(
 )
 
 build_test(
-    name = "example_build_test",
+    name = "basic_example_build_test",
     targets = [
-        ":libstrophe_example",
+        ":basic_example",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+build_test(
+    name = "complex_example_build_test",
+    targets = [
+        ":complex_example",
     ],
     visibility = ["//:__pkg__"],
 )
@@ -43,7 +66,8 @@ test_suite(
     name = "libstrophe_test_suite",
     tests = [
         ":build_test",
-        ":example_build_test",
+        ":basic_example_build_test",
+        ":complex_example_build_test",
     ],
     visibility = ["//:__pkg__"],
 )

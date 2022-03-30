@@ -5,8 +5,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Libstrophe Example",
-            "preLaunchTask": "Build Libstrophe Example (Debug)",
+            "name": "Launch Basic Example",
+            "preLaunchTask": "Build Basic Example (Debug)",
             "type": "cppdbg",
             "MIMode": "lldb",
             "request": "launch",
