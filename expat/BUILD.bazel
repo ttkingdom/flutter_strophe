@@ -1,0 +1,48 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_cc//cc:defs.bzl", "cc_test", "cc_binary")
+
+exports_files(
+    [
+        "BUILD.expat.bazel",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "expat_example",
+    srcs = ["expat_example.c"],
+    copts = [],
+    linkopts = select({
+        "@expat//:msvc_compiler": [
+            "advapi32.lib",
+            "user32.lib",
+        ],
+        "//conditions:default": [],
+    }),
+    deps = ["@expat"],
+)
+
+build_test(
+    name = "example_build_test",
+    targets = [
+        ":expat_example",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+build_test(
+    name = "build_test",
+    targets = [
+        "@expat//:expat",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+test_suite(
+    name = "expat_test_suite",
+    tests = [
+        ":build_test",
+        ":example_build_test",
+    ],
+    visibility = ["//:__pkg__"],
+)

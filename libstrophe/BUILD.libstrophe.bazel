@@ -1,0 +1,46 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake", "configure_make")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(
+        include = ["**"],
+        exclude = ["*.bazel"],
+    ),
+)
+
+LIB_NAME = "libstrophe"
+
+config_setting(
+    name = "msvc_compiler",
+    flag_values = {
+        "@bazel_tools//tools/cpp:compiler": "msvc-cl",
+    },
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "libstrophe",
+    actual = select({
+        ":msvc_compiler": "libstrophe_msvc",
+        "//conditions:default": "libstrophe_default",
+    }),
+    visibility = ["//visibility:public"],
+)
+
+configure_make(
+    name = "libstrophe_default",
+    autoreconf = True,
+    autoreconf_options = ["--install"],
+    configure_in_place = True,
+    env = select({
+        "@platforms//os:macos": {"AR": ""},
+        "//conditions:default": {},
+    }),
+    lib_name = LIB_NAME,
+    lib_source = ":all_srcs",
+    out_static_libs = ["libstrophe.a"],
+    deps = [
+        "@expat",
+        "@openssl",
+    ],
+)

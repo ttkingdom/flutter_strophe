@@ -1,0 +1,78 @@
+# This loads rules_foreign_cc, please see
+# https://github.com/bazelbuild/rules_foreign_cc/releases
+
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+maybe(
+    http_archive,
+    name = "rules_foreign_cc",
+    sha256 = "bcd0c5f46a49b85b384906daae41d277b3dc0ff27c7c752cc51e43048a58ec83",
+    strip_prefix = "rules_foreign_cc-0.7.1",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.7.1.tar.gz",
+)
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+
+# This sets up some common toolchains for building targets. For more details, please see
+# https://bazelbuild.github.io/rules_foreign_cc/0.7.1/flatten.html#rules_foreign_cc_dependencies
+rules_foreign_cc_dependencies(register_preinstalled_tools = False)
+
+# This loads rules_perl, please see
+# https://github.com/bazelbuild/rules_perl/blob/main/README.md
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository", "new_git_repository")
+git_repository(
+    name = "rules_perl",
+    remote = "https://github.com/bazelbuild/rules_perl.git",
+    commit = "8319d757482d16d9962d3b787e69de3960c82442",
+)
+load("@rules_perl//perl:deps.bzl", "perl_register_toolchains", "perl_rules_dependencies",)
+perl_rules_dependencies()
+perl_register_toolchains()
+
+maybe(
+    new_git_repository,
+    name = "libstrophe",
+    build_file = "//libstrophe:BUILD.libstrophe.bazel",
+    remote = "https://github.com/strophe/libstrophe",
+    commit = "7111ee2f85e37df17f776f56d038526a5fa80f5d",
+)
+
+maybe(
+    http_archive,
+    name = "openssl",
+    build_file = "//openssl:BUILD.openssl.bazel",
+    sha256 = "98e91ccead4d4756ae3c9cde5e09191a8e586d9f4d50838e7ec09d6411dfdb63",
+    strip_prefix = "openssl-3.0.2",
+    urls = [
+        "https://www.openssl.org/source/openssl-3.0.2.tar.gz",
+    ],
+)
+
+maybe(
+    http_archive,
+    name = "nasm",
+    build_file = "//openssl:BUILD.nasm.bazel",
+    sha256 = "f5c93c146f52b4f1664fa3ce6579f961a910e869ab0dae431bd871bdd2584ef2",
+    strip_prefix = "nasm-2.15.05",
+    urls = [
+        "https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/nasm-2.15.05-win64.zip",
+    ],
+)
+
+maybe(
+    http_archive,
+    name = "expat",
+    build_file = "//expat:BUILD.expat.bazel",
+    sha256 = "72644d5f0f313e2a5cf81275b09b9770c866dd87a2b62ab19981657ac0d4af5f",
+    strip_prefix = "expat-2.4.7",
+    urls = [
+        "https://github.com/libexpat/libexpat/releases/download/R_2_4_7/expat-2.4.7.tar.gz",
+    ],
+)
+
+maybe(
+    http_archive,
+    name = "rules_cc",
+    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.1/rules_cc-0.0.1.tar.gz"],
+    sha256 = "4dccbfd22c0def164c8f47458bd50e0c7148f3d92002cdb459c2a96a68498241",
+)

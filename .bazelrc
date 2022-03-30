@@ -1,0 +1,2 @@
+build:debug -c dbg
+build:debug --features=oso_prefix_is_pwd

@@ -1,0 +1,49 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_test")
+
+exports_files(
+    [
+        "BUILD.libstrophe.bazel",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_binary(
+    name = "libstrophe_example",
+    srcs = ["libstrophe_example.c"],
+    linkopts = [
+        "-undefined",
+        "dynamic_lookup",
+    ],
+    includes = ["@libstrophe://src"],
+    deps = [
+        "@expat",
+        "@libstrophe",
+        "@openssl",
+    ],
+)
+
+build_test(
+    name = "example_build_test",
+    targets = [
+        ":libstrophe_example",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+build_test(
+    name = "build_test",
+    targets = [
+        "@libstrophe//:libstrophe",
+    ],
+    visibility = ["//:__pkg__"],
+)
+
+test_suite(
+    name = "libstrophe_test_suite",
+    tests = [
+        ":build_test",
+        ":example_build_test",
+    ],
+    visibility = ["//:__pkg__"],
+)
